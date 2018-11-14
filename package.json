@@ -1,0 +1,14 @@
+{
+  "name": "KimDexBot",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "dotenv": "^6.1.0",
+    "mysql2": "^1.6.1",
+    "sequelize": "^4.41.0",
+    "twitch-bot": "^1.2.5"
+  }
+}
