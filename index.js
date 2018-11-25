@@ -12,14 +12,21 @@ const twitchBot = new TwitchBot({
 
 const discordBot = new Discord.Client();
 
-twitchBot.on("join", () => {
+twitchBot.on("join", channel => {
+  console.log(`Joined channel: ${channel}`);
+
   setInterval(() => {
     models.Tip.findAll().then(tips => {
-      twitchBot.say(tips[0].text);
-      console.log("interval test");
+      let text = tips[getRandomInt(0, tips.length)].text;
+      twitchBot.say(text);
+      console.log(text);
     });
-  }, 3000);
+  }, 300000);
 });
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 discordBot.on("ready", () => {
   console.log(`Logged in as ${discordBot.user.tag}!`);
