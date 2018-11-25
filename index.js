@@ -5,9 +5,9 @@ const Discord = require("discord.js");
 const models = require("./models");
 
 const twitchBot = new TwitchBot({
-  username: "KimDexBot",
+  username: "kimdexbot",
   oauth: process.env.TWITCH_TOKEN,
-  channels: ["iwt2hw"]
+  channels: ["#iwt2hw"]
 });
 
 const discordBot = new Discord.Client();
