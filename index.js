@@ -16,6 +16,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/setting", settingRouter);
 
+app.listen(3002, () => {
+  console.log("Listening on port 3002!");
+});
+
 settingRouter.post("/delaytime", (req, res) => {
   setting.delaytime = parseInt(req.params.time, 10);
   json = JSON.stringify(setting);
