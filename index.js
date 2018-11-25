@@ -1,8 +1,27 @@
 require("dotenv").config();
 
+const fs = require("fs");
+const express = require("express");
 const TwitchBot = require("twitch-bot");
 const Discord = require("discord.js");
 const models = require("./models");
+
+const app = express();
+const settingRouter = express.Router();
+
+let setting = { delaytime: 300000 };
+
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.use("/setting", settingRouter);
+
+settingRouter.post("/delaytime", (req, res) => {
+  setting.delaytime = parseInt(req.params.time, 10);
+  json = JSON.stringify(setting);
+  fs.writeFile("etting.json", json, "utf8");
+});
 
 const twitchBot = new TwitchBot({
   username: "kimdexbot",
@@ -15,14 +34,27 @@ const discordBot = new Discord.Client();
 twitchBot.on("join", channel => {
   console.log(`Joined channel: ${channel}`);
 
-  setInterval(() => {
+  fs.readFile("setting.json", "utf8", (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      setting = JSON.parse(data);
+    }
+  });
+
+  runTips();
+});
+
+function runTips() {
+  setTimeout(function() {
     models.Tip.findAll().then(tips => {
       let text = tips[getRandomInt(0, tips.length)].text;
       twitchBot.say(text);
       console.log(text);
     });
-  }, 300000);
-});
+    runTips();
+  }, setting.delaytime);
+}
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
