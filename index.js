@@ -4,15 +4,20 @@ const fs = require("fs");
 const express = require("express");
 const TwitchBot = require("twitch-bot");
 const Discord = require("discord.js");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const models = require("./models");
 
 const app = express();
 const settingRouter = express.Router();
 
 let setting = { delaytime: 300000 };
+let tipTimer = 0;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
 app.use("/setting", settingRouter);
 
@@ -21,9 +26,19 @@ app.listen(3002, () => {
 });
 
 settingRouter.post("/delaytime", (req, res) => {
-  setting.delaytime = parseInt(req.params.time, 10);
+  setting.delaytime = parseInt(req.body.time, 10) * 1000 * 60;
+  killTips();
+  runTips();
   json = JSON.stringify(setting);
-  fs.writeFile("etting.json", json, "utf8");
+  fs.writeFile("setting.json", json, "utf8", err => {
+    if (err) {
+      console.log(err);
+    }
+  });
+});
+
+settingRouter.get("/delaytime", (req, res) => {
+  setting.delaytime
 });
 
 const twitchBot = new TwitchBot({
@@ -42,6 +57,8 @@ twitchBot.on("join", channel => {
       console.log(err);
     } else {
       setting = JSON.parse(data);
+      killTips();
+      runTips();
     }
   });
 
@@ -49,7 +66,7 @@ twitchBot.on("join", channel => {
 });
 
 function runTips() {
-  setTimeout(function() {
+  tipTimer = setTimeout(function() {
     models.Tip.findAll().then(tips => {
       let text = tips[getRandomInt(0, tips.length)].text;
       twitchBot.say(text);
@@ -57,6 +74,11 @@ function runTips() {
     });
     runTips();
   }, setting.delaytime);
+}
+
+function killTips() {
+  clearTimeout(tipTimer);
+  tipTimer = 0;
 }
 
 function getRandomInt(min, max) {
