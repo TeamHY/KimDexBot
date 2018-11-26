@@ -26,7 +26,8 @@ app.listen(3002, () => {
 });
 
 settingRouter.post("/delaytime", (req, res) => {
-  setting.delaytime = parseInt(req.body.time, 10) * 1000 * 60;
+  let time = parseInt(req.body.time, 10);
+  setting.delaytime = (time <= 1 ? 1 : time >= 120 ? 120 : time) * 1000 * 60;
   killTips();
   runTips();
   json = JSON.stringify(setting);
@@ -38,7 +39,7 @@ settingRouter.post("/delaytime", (req, res) => {
 });
 
 settingRouter.get("/delaytime", (req, res) => {
-  setting.delaytime
+  setting.delaytime;
 });
 
 const twitchBot = new TwitchBot({
