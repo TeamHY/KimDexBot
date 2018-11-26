@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-app.use("/setting", settingRouter);
+app.use("/bot/setting", settingRouter);
 
 app.listen(3002, () => {
   console.log("Listening on port 3002!");
