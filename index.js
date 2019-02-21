@@ -51,7 +51,7 @@ const twitchBot = new TwitchBot({
 const discordBot = new Discord.Client();
 
 twitchBot.on("join", channel => {
-  console.log(`Joined channel: ${channel}`);
+  console.log(`${channel} 채널에 들어왔습니다.`);
 
   fs.readFile("setting.json", "utf8", (err, data) => {
     if (err) {
@@ -65,6 +65,11 @@ twitchBot.on("join", channel => {
 
   runTips();
 });
+
+twitchBot.on('part', channel => {
+  console.log(`${channel} 채널에서 나왔습니다.`)
+  twitchBot.join("#iwt2hw")
+})
 
 function runTips() {
   tipTimer = setTimeout(function() {
@@ -92,6 +97,7 @@ discordBot.on("ready", () => {
 
 twitchBot.on("error", err => {
   console.log(err);
+  twitchBot.part("#iwt2hw")
 });
 
 discordBot.on("error", err => {
