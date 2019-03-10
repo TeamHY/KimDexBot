@@ -66,7 +66,7 @@ twitchBot.on("join", channel => {
   runTips();
 });
 
-twitchBot.on('part', channel => {
+twitchBot.on('close', channel => {
   console.log(`${channel} 채널에서 나왔습니다.`)
   twitchBot.join("#iwt2hw")
 })
@@ -97,7 +97,7 @@ discordBot.on("ready", () => {
 
 twitchBot.on("error", err => {
   console.log(err);
-  twitchBot.part("#iwt2hw")
+  twitchBot.close()
 });
 
 discordBot.on("error", err => {
